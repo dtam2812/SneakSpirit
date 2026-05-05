@@ -1,10 +1,10 @@
 const Banner = ({ bannerSrc }) => {
   return (
-    <div >
+    <div>
       <a>
-        <img className='w-full' src={bannerSrc} alt="" />
+        <img className="w-full h-fit" src={bannerSrc} alt="" />
       </a>
     </div>
-  )
-}
-export default Banner
+  );
+};
+export default Banner;
