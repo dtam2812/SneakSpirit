@@ -190,24 +190,32 @@ const Cart = () => {
                                 </div>
                                 <div className="flex items-center justify-between gap-x-6">
                                   {element.category !== "Khác" && (
-                                    <form>
-                                      <select
-                                        id="size"
-                                        value={element.size}
-                                        onChange={(e) =>
-                                          handleSizeChange(
-                                            index,
-                                            e.target.value,
-                                          )
-                                        }
-                                        className="block w-16 border border-gray-300 p-2 rounded-md outline-none focus:ring-2 focus:ring-black"
-                                      >
-                                        <option value="S">S</option>
-                                        <option value="M">M</option>
-                                        <option value="L">L</option>
-                                        <option value="XL">XL</option>
-                                      </select>
-                                    </form>
+                                    <select
+                                      value={element.size}
+                                      onChange={(e) =>
+                                        handleSizeChange(index, e.target.value)
+                                      }
+                                      className="block w-24 border border-gray-300 p-2 rounded-md outline-none focus:ring-2 focus:ring-black"
+                                    >
+                                      {[
+                                        "US6",
+                                        "US6_5",
+                                        "US7",
+                                        "US7_5",
+                                        "US8",
+                                        "US8_5",
+                                        "US9",
+                                        "US9_5",
+                                        "US10",
+                                        "US10_5",
+                                      ].map((size) => (
+                                        <option key={size} value={size}>
+                                          {size
+                                            .replace("_", ".")
+                                            .replace("US", "US ")}
+                                        </option>
+                                      ))}
+                                    </select>
                                   )}
                                   <div className=" h-9 w-24 border border-[#919191] flex justify-around items-center rounded-lg">
                                     <FontAwesomeIcon

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../HomePage.css";
 import Banner from "../components/Banner";
 import FeaturedProducts from "../components/FeaturedProducts";
@@ -6,7 +7,9 @@ import VoucherList from "../components/VoucherList";
 function HomePage() {
   return (
     <div className="container">
-      <Banner bannerSrc="https://bizweb.dktcdn.net/100/472/913/themes/888429/assets/imgtext_1_img.jpg?1725935235961" />
+      <Link to="/collection">
+        <Banner bannerSrc="./public/banner2.jpg" />
+      </Link>
       {/*Liệt kê voucher*/}
       <VoucherList />
 
