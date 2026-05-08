@@ -54,7 +54,7 @@ const Header = ({ cartList, setCartList, setAccessToken, accessToken }) => {
     if (!accessToken) navigate("/login");
   };
   return (
-    <header className="shadow-md sm:z-30 sticky top-0 bg-white">
+    <header className="shadow-md z-50 sticky top-0 bg-white">
       <div className="container">
         <nav className="bg-white relative border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800 ">
           <div className="flex justify-between items-center mx-auto">

@@ -16,29 +16,33 @@ const Footer = () => {
     <footer className=" bg-[#2e2e2e] text-[#a9a9a9]">
       <div className="container">
         <div className="xl:flex py-20 gap-x-5 px-2 sm:px-8">
-          <div className="xl:w-1/4">
-            <img className="w-60 h-40" src="./public/logo.png" alt="" />
-            <div className="flex gap-x-3 items-center pb-2">
+          <div className="xl:w-1/4 ">
+            <img
+              className="w-60 h-40 sm:mx-auto lg:mx-0"
+              src="./public/logo.png"
+              alt=""
+            />
+            <div className="flex gap-x-3 items-center pb-2 ">
               <p>
                 <FontAwesomeIcon icon={faLocationDot} />
               </p>
-              <p>Địa chỉ: Thuận An, Bình Dương</p>
+              <p>Địa chỉ: Thủ Đức, TP. Hồ Chí Minh</p>
             </div>
             <div className="flex gap-x-3 items-center pb-2">
               <p>
                 <FontAwesomeIcon icon={faMobileScreenButton} />
               </p>
-              <p>Số điện thoại: 0383300680</p>
+              <p>Số điện thoại: 0396528253</p>
             </div>
             <div className="flex gap-x-3 items-center pb-2">
               <p>
                 <FontAwesomeIcon icon={faEnvelope} />
               </p>
-              <p>Email: hybid@lamvlog.com</p>
+              <p>Email: 23521384@gm.uit.edu.vn</p>
             </div>
             <div className="text-left space-y-2">
               <p>
-                © Bản quyền thuộc về Lâm Vlog | Cung cấp bởi{" "}
+                © Bản quyền thuộc về Sneak Spirit | Cung cấp bởi{" "}
                 <a
                   className="cursor-pointer hover:text-blue-300"
                   target="_blank"
@@ -47,10 +51,10 @@ const Footer = () => {
                   Sapo
                 </a>
               </p>
-              <p>CÔNG TY TNHH MTV LÂM MEDIA</p>
+              <p>CÔNG TY TNHH MTV Sneak Spirit</p>
               <p>MST: 3901347965</p>
               <p>Ngày cấp: 01/07/2024</p>
-              <p>Nơi cấp: Sở Kế Hoạch Và Đầu Tư tỉnh Tây Ninh</p>
+              <p>Nơi cấp: Sở Kế Hoạch Và Đầu Tư TP. Hồ Chí Minh</p>
             </div>
           </div>
           <div className="xl:w-1/4 pt-10 xl:pt-0 text-left xl:relative sm:flex-none flex justify-between">
@@ -146,7 +150,13 @@ const Footer = () => {
           <div className="w-full sm:w-1/2 xl:w-1/4 text-left xl:pt-0 pt-10 space-y-2">
             <h3 className="font-bold">Fanpage</h3>
             <p className="cursor-pointer text-blue-300">
-              <a href="https://www.facebook.com/facebook">Facebook</a>
+              <a
+                href="https://www.facebook.com/tam.dinh.31924792/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Facebook
+              </a>
             </p>
             <p>Bạn muốn nhận khuyến mãi đặc biệt? Đăng ký ngay.</p>
             <form className="relative flex items-center py-3">
@@ -160,12 +170,17 @@ const Footer = () => {
               </button>
             </form>
             <div className="flex space-x-4">
-              <a href="https://www.facebook.com/LamVlog" target="_blank">
+              <a
+                href="https://www.facebook.com/tam.dinh.31924792/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src="https://bizweb.dktcdn.net/100/472/913/themes/888429/assets/facebook.png?1725935235961" />
               </a>
               <a
                 href="https://id.zalo.me/account?continue=http%3A%2F%2Fzalo%2Eme%2F0383300680"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 <img src="https://bizweb.dktcdn.net/100/472/913/themes/888429/assets/zalo.png?1725935235961" />
               </a>

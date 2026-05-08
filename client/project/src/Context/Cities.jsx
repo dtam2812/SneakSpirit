@@ -1,86 +1,87 @@
-/* eslint-disable react/prop-types */
 import axios from "axios";
-import { createContext, useEffect, useState } from "react"
+import { createContext, useEffect, useState } from "react";
 
 const CitiesContext = createContext();
+const BASE_URL = "https://provinces.open-api.vn/api/v1";
 
 const Cities = ({ children }) => {
   const [cities, setCities] = useState([]);
-  const [selectedCity, setSelectedCity] = useState({ id: "", code: 0, name: "" });
+  const [selectedCity, setSelectedCity] = useState({ code: "", name: "" });
   const [districts, setDistricts] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState({ id: "", code: 0, name: "" });
+  const [selectedDistrict, setSelectedDistrict] = useState({
+    code: "",
+    name: "",
+  });
   const [wards, setWards] = useState([]);
-  const [selectedWard, setSelectedWard] = useState({ id: "", code: 0, name: "" });
+  const [selectedWard, setSelectedWard] = useState({ code: "", name: "" });
 
   useEffect(() => {
-    //Lấy danh sách tỉnh/thành
-    const getCities = async () => {
-      try {
-        const response = await axios.get('https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1');
-        setCities(response.data.data.data)
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    axios
+      .get(`${BASE_URL}/?depth=1`)
+      .then((res) => setCities(res.data))
+      .catch(console.error);
+  }, []);
 
-    //Lấy danh sách quận/huyện
-    const getDistricts = async (code) => {
-      try {
-        const response = await axios.get(`https://vn-public-apis.fpo.vn/districts/getByProvince?provinceCode=${code}&limit=-1`)
-        setDistricts(response.data.data.data || []);
-      } catch (error) {
-        console.log(error)
-      }
-    }
+  useEffect(() => {
+    if (!selectedCity.code) return;
+    setDistricts([]);
+    setSelectedDistrict({ code: "", name: "" });
+    setWards([]);
+    setSelectedWard({ code: "", name: "" });
 
-    //Lấy danh sách phường xã
-    const getWards = async (code) => {
-      try {
-        const response = await axios.get(`https://vn-public-apis.fpo.vn/wards/getByDistrict?districtCode=${code}&limit=-1`)
-        setWards(response.data.data.data || []);
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    axios
+      .get(`${BASE_URL}/p/${selectedCity.code}?depth=2`)
+      .then((res) => setDistricts(res.data.districts || []))
+      .catch(console.error);
+  }, [selectedCity.code]);
 
-    getCities();
-    getDistricts(selectedCity.code);
-    getWards(selectedDistrict.code)
-  }, [selectedCity.code, selectedDistrict.code])
+  useEffect(() => {
+    if (!selectedDistrict.code) return;
+    setWards([]);
+    setSelectedWard({ code: "", name: "" });
 
-  //Thay đổi tỉnh/thành
+    axios
+      .get(`${BASE_URL}/d/${selectedDistrict.code}?depth=2`)
+      .then((res) => setWards(res.data.wards || []))
+      .catch(console.error);
+  }, [selectedDistrict.code]);
+
   const handleCityChange = (e) => {
-    const cityCode = e.target.value;
-    const cityId = cities.find((element) => (element.code === cityCode))._id;
-    const cityName = cities.find((element) => (element._id === cityId)).name;
+    const code = Number(e.target.value);
+    const city = cities.find((c) => c.code === code);
+    if (city) setSelectedCity({ code: city.code, name: city.name });
+  };
 
-    setSelectedCity({ id: cityId, code: cityCode, name: cityName })
-  }
-
-  //Thay đổi quận/huyện
   const handleDistrictChange = (e) => {
-    const districtCode = e.target.value;
-    const districtId = districts.find((element) => (element.code === districtCode))._id;
-    const districtName = districts.find((element) => (element._id === districtId)).name;
+    const code = Number(e.target.value);
+    const district = districts.find((d) => d.code === code);
+    if (district)
+      setSelectedDistrict({ code: district.code, name: district.name });
+  };
 
-    setSelectedDistrict({ id: districtId, code: districtCode, name: districtName })
-  }
-
-  //Thay đổi phường xã
   const handleWardChange = (e) => {
-    const wardCode = e.target.value;
-    const wardId = wards.find((element) => (element.code === wardCode))._id;
-    const wardName = wards.find((element) => (element._id === wardId)).name;
+    const code = Number(e.target.value);
+    const ward = wards.find((w) => w.code === code);
+    if (ward) setSelectedWard({ code: ward.code, name: ward.name });
+  };
 
-    setSelectedWard({ id: wardId, code: wardCode, name: wardName })
-  }
   return (
-    <CitiesContext.Provider value={{
-      cities, setCities, selectedCity, setSelectedCity, districts, setDistricts, selectedDistrict, setSelectedDistrict,
-      wards, setWards, selectedWard, setSelectedWard, handleCityChange, handleDistrictChange, handleWardChange
-    }}>
+    <CitiesContext.Provider
+      value={{
+        cities,
+        selectedCity,
+        districts,
+        selectedDistrict,
+        wards,
+        selectedWard,
+        handleCityChange,
+        handleDistrictChange,
+        handleWardChange,
+      }}
+    >
       {children}
     </CitiesContext.Provider>
-  )
-}
+  );
+};
+
 export { CitiesContext, Cities };

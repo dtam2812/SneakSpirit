@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../ProductCard";
 import { ProductContext } from "../Context/GetListProduct";
+import Loading from "./Loading";
 
 const BRANDS = [
   "Tất cả",
@@ -18,20 +19,8 @@ const FeaturedProducts = () => {
   const { listProduct } = useContext(ProductContext);
   const [activeBrand, setActiveBrand] = useState("Tất cả");
   const navigate = useNavigate();
-  if (!listProduct) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="flex gap-2">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="w-2 h-2 bg-gray-900 rounded-full animate-bounce"
-              style={{ animationDelay: `${i * 0.15}s` }}
-            />
-          ))}
-        </div>
-      </div>
-    );
+  if (!listProduct || listProduct.length === 0) {
+    return <Loading />;
   }
 
   const featured = listProduct.slice(0, 10);
@@ -87,7 +76,6 @@ const FeaturedProducts = () => {
             }
             price={element.price}
             originalPrice={element.originalPrice}
-            discountPercent={element.discountPercent}
           />
         ))}
       </div>
