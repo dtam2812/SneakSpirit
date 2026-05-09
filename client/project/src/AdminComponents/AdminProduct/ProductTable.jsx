@@ -31,6 +31,7 @@ const SIZE_LABELS = {
 const ProductTable = ({
   listProduct,
   setIsEditing,
+  setListProduct,
   setCurrentProduct,
   searchingValue,
   searched,
@@ -42,6 +43,7 @@ const ProductTable = ({
   const handleDelete = async (productId) => {
     try {
       await axios.delete(`auth/admin/product/delete/${productId}`);
+      setListProduct((prev) => prev.filter((p) => p._id !== productId));
     } catch (error) {
       if (error.response?.status === 401) {
         console.log("Unauthorized request");

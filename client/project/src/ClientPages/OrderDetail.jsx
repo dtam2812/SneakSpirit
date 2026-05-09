@@ -24,7 +24,7 @@ const OrderDetail = () => {
   const [detailedAddress, setDetailedAddress] = useState("");
   const navigate = useNavigate();
 
-  //Lấy chi tiết sản phẩm
+  // Lấy chi tiết đơn hàng
   useEffect(() => {
     const getOrderDetail = async () => {
       try {
@@ -37,37 +37,51 @@ const OrderDetail = () => {
     getOrderDetail();
   }, [id]);
 
-  //Lấy địa chỉ đơn hàng
-  const address = order.shippingAddress.address.split(",").reverse();
-  const cityName = address[0];
-  const districtName = address[1];
-  const wardName = address[2];
-  address[4]
-    ? setDetailedAddress(`${address[4]}, ${address[3]}`)
-    : setDetailedAddress(address[3]);
+  // Xử lý city
+  useEffect(() => {
+    if (!order || !cities.length) return;
 
-  const city = cities.find((element) => element.name === cityName);
-  const district = districts?.find((element) => element.name === districtName);
-  const ward = wards?.find((element) => element.name === wardName);
-  if (city) {
-    setSelectedCity({ id: city._id, name: city.name, code: city.code });
-  }
+    const address = order.shippingAddress.address.split(",").reverse();
+    const cityName = address[0].trim();
+    const districtName = address[1].trim();
+    const wardName = address[2].trim();
+    const detailed = address.slice(3).reverse().join(", ");
+    setDetailedAddress(detailed);
 
-  if (district) {
-    setSelectedDistrict({
-      id: district._id,
-      name: district.name,
-      code: district.code,
-    });
-  }
+    const city = cities.find((e) => e.name === cityName);
+    if (city)
+      setSelectedCity({ id: city._id, name: city.name, code: city.code });
+  }, [order, cities]);
 
-  if (ward) {
-    setSelectedWard({ id: ward._id, name: ward.name, code: ward.code });
-  }
+  // Xử lý district
+  useEffect(() => {
+    if (!order || !districts.length) return;
 
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString("vi-VN");
-  };
+    const address = order.shippingAddress.address.split(",").reverse();
+    const districtName = address[1].trim();
+
+    const district = districts.find((e) => e.name === districtName);
+    if (district)
+      setSelectedDistrict({
+        id: district._id,
+        name: district.name,
+        code: district.code,
+      });
+  }, [districts]);
+
+  // Xử lý ward — chạy khi wards thay đổi (sau khi district được set)
+  useEffect(() => {
+    if (!order || !wards.length) return;
+
+    const address = order.shippingAddress.address.split(",").reverse();
+    const wardName = address[2].trim();
+
+    const ward = wards.find((e) => e.name === wardName);
+    if (ward)
+      setSelectedWard({ id: ward._id, name: ward.name, code: ward.code });
+  }, [wards]);
+
+  const formatDate = (date) => new Date(date).toLocaleDateString("vi-VN");
 
   const handleDeleteOrder = async (orderId) => {
     try {
@@ -79,9 +93,9 @@ const OrderDetail = () => {
     }
   };
 
-  return !order ? (
-    <Loading />
-  ) : (
+  if (!order) return <Loading />;
+
+  return (
     <div>
       <Breadcrumb first="Chi tiết đơn hàng" />
       <div>
@@ -90,39 +104,33 @@ const OrderDetail = () => {
             <div className="px-4 pt-8">
               <p className="text-xl font-medium pb-1">Chi tiết đơn hàng</p>
               <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-                {
-                  //Liệt kê sản phẩm
-                  order.orderItems.map((element) => {
-                    return (
-                      <>
-                        <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-                          <img
-                            className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                            src={element.image}
-                          />
-                          <div className="flex w-full flex-col px-4 py-4">
-                            <span className="font-semibold">
-                              {element.name}
-                            </span>
-                            <div className="flex justify-between">
-                              <p className="float-right text-gray-400">
-                                {element.size}
-                              </p>
-                              <p className="float-right text-gray-400">
-                                x{element.quantity}
-                              </p>
-                            </div>
-                            <p className="text-lg font-bold">
-                              {element.price.toLocaleString("vi-VN")}đ
-                            </p>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })
-                }
+                {order.orderItems.map((element) => (
+                  <div
+                    key={element._id}
+                    className="flex flex-col rounded-lg bg-white sm:flex-row"
+                  >
+                    <img
+                      className="m-2 h-24 w-28 rounded-md border object-cover object-center"
+                      src={element.image}
+                    />
+                    <div className="flex w-full flex-col px-4 py-4">
+                      <span className="font-semibold">{element.name}</span>
+                      <div className="flex justify-between">
+                        <p className="float-right text-gray-400">
+                          {element.size}
+                        </p>
+                        <p className="float-right text-gray-400">
+                          x{element.quantity}
+                        </p>
+                      </div>
+                      <p className="text-lg font-bold">
+                        {element.price.toLocaleString("vi-VN")}đ
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              {/*Phương thức thanh toán*/}
+
               <p className="mt-8 text-lg font-medium">Phương thức thanh toán</p>
               <form className="mt-5 grid gap-6">
                 <div className="relative">
@@ -157,10 +165,10 @@ const OrderDetail = () => {
                 </div>
               </form>
             </div>
-            {/*Thông tin thanh toán*/}
+
             <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
               <p className="text-xl font-medium">Thông tin thanh toán</p>
-              <div className>
+              <div>
                 <label
                   htmlFor="email"
                   className="mt-4 mb-2 block text-sm font-medium"
@@ -173,13 +181,14 @@ const OrderDetail = () => {
                     type="text"
                     id="email"
                     value={order.shippingAddress.email}
-                    className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none"
                     placeholder="your.email@gmail.com"
                   />
                   <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
                     <FontAwesomeIcon icon={faAt} />
                   </div>
                 </div>
+
                 <label className="mt-4 mb-2 block text-sm font-medium">
                   Họ và tên
                 </label>
@@ -189,104 +198,83 @@ const OrderDetail = () => {
                     type="text"
                     id="name"
                     value={order.shippingAddress.fullName}
-                    className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none"
                     placeholder="Họ và tên"
                   />
                   <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
                     <FontAwesomeIcon icon={faUser} />
                   </div>
                 </div>
+
                 <label className="mt-4 mb-2 block text-sm font-medium">
                   Số điện thoại
                 </label>
-                <div className="flex">
-                  <div className="relative w-full flex-shrink-0">
-                    <input
-                      disabled
-                      type="telephone"
-                      id="telephone"
-                      value={order.shippingAddress.telephone}
-                      className="w-full rounded-md border border-gray-200 px-2 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                      placeholder="xxxx-xxxx-xxxx-xxxx"
-                    />
-                    <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
-                      <FontAwesomeIcon icon={faPhone} />
-                    </div>
+                <div className="relative">
+                  <input
+                    disabled
+                    type="tel"
+                    id="telephone"
+                    value={order.shippingAddress.telephone}
+                    className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none"
+                  />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
+                    <FontAwesomeIcon icon={faPhone} />
                   </div>
                 </div>
+
                 <div className="flex gap-x-4">
                   <div className="w-1/3">
                     <label className="mt-4 mb-2 block text-sm font-medium">
-                      Tỉnh thành<span className="text-red-500">*</span>
+                      Tỉnh thành
                     </label>
-                    <div>
-                      <input
-                        id="city"
-                        disabled
-                        className="w-full rounded-md border border-gray-200 px-2 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                        value={selectedCity.name}
-                      ></input>
-                    </div>
+                    <input
+                      disabled
+                      className="w-full rounded-md border border-gray-200 px-2 py-3 text-sm shadow-sm outline-none"
+                      value={selectedCity.name || ""}
+                    />
                   </div>
-
                   <div className="w-1/3">
                     <label className="mt-4 mb-2 block text-sm font-medium">
-                      Quận/Huyện<span className="text-red-500">*</span>
+                      Quận/Huyện
                     </label>
-                    <div>
-                      <input
-                        id="district"
-                        disabled
-                        className="w-full rounded-md border border-gray-200 px-2 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                        value={selectedDistrict.name}
-                      ></input>
-                    </div>
+                    <input
+                      disabled
+                      className="w-full rounded-md border border-gray-200 px-2 py-3 text-sm shadow-sm outline-none"
+                      value={selectedDistrict.name || ""}
+                    />
                   </div>
-
                   <div className="w-1/3">
                     <label className="mt-4 mb-2 block text-sm font-medium">
-                      Phường/Xã<span className="text-red-500">*</span>
+                      Phường/Xã
                     </label>
-                    <div>
-                      <input
-                        id="ward"
-                        disabled
-                        className="w-full rounded-md border border-gray-200 px-2 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                        value={selectedWard.name}
-                      ></input>
-                    </div>
+                    <input
+                      disabled
+                      className="w-full rounded-md border border-gray-200 px-2 py-3 text-sm shadow-sm outline-none"
+                      value={selectedWard.name || ""}
+                    />
                   </div>
                 </div>
+
                 <label className="mt-4 mb-2 block text-sm font-medium">
                   Địa chỉ
                 </label>
-                <div>
-                  <div className=" sm:w-full">
-                    <input
-                      value={detailedAddress}
-                      disabled
-                      type="text"
-                      id="address"
-                      placeholder="Địa chỉ"
-                      className="w-full rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
+                <input
+                  disabled
+                  type="text"
+                  value={detailedAddress}
+                  className="w-full rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none"
+                />
+
                 <label className="mt-4 mb-2 block text-sm font-medium">
                   Ghi chú
                 </label>
-                <div>
-                  <div className=" sm:w-full">
-                    <textarea
-                      type="text"
-                      disabled
-                      id="note"
-                      value={order.note}
-                      className="w-full h-28 rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-                <div className="mt-6  border-b py-2">
+                <textarea
+                  disabled
+                  value={order.note}
+                  className="w-full h-28 rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none"
+                />
+
+                <div className="mt-6 border-b py-2">
                   <div className="mt-6 flex items-center justify-between">
                     <p className="text-sm font-medium text-gray-900">
                       Ngày đặt hàng
@@ -296,6 +284,7 @@ const OrderDetail = () => {
                     </p>
                   </div>
                 </div>
+
                 <div className="mt-6 flex items-center justify-between">
                   <p className="text-sm font-medium text-gray-900">Tổng</p>
                   <p className="text-2xl font-semibold text-gray-900">
@@ -303,7 +292,7 @@ const OrderDetail = () => {
                   </p>
                 </div>
               </div>
-              {/*Hủy đơn hàng*/}
+
               <button
                 onClick={() => handleDeleteOrder(id)}
                 className="mt-4 mb-8 w-full rounded-md bg-red-600 px-6 py-3 text-xl font-semibold hover:opacity-75 duration-200 text-white"
@@ -317,4 +306,5 @@ const OrderDetail = () => {
     </div>
   );
 };
+
 export default OrderDetail;

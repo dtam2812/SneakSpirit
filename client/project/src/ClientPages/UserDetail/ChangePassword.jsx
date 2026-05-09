@@ -42,7 +42,7 @@ const ChangePassword = ({ user }) => {
   };
 
   if (!user) {
-    return <Loading />;
+    return;
   }
 
   return (

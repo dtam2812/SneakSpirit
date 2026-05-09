@@ -18,7 +18,7 @@ const Footer = () => {
         <div className="xl:flex py-20 gap-x-5 px-2 sm:px-8">
           <div className="xl:w-1/4 ">
             <img
-              className="w-60 h-40 sm:mx-auto lg:mx-0"
+              className="w-60 h-40 mx-auto lg:mx-0"
               src="./public/logo.png"
               alt=""
             />

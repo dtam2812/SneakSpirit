@@ -10,7 +10,6 @@ const voucherSchema = new mongoose.Schema({
   discount: Number,
   maximumDiscount: Number,
   appliedFor: Number,
-  pic: String,
 });
 
 const Voucher = mongoose.model("Voucher", voucherSchema);

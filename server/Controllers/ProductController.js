@@ -77,37 +77,29 @@ const deleteProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
-    const {
-      productName,
-      brand,
-      price,
-      originalPrice,
-      discountPercent,
-      category,
-      sizes,
-      quantity,
-      description,
-      specifications,
-      careInstructions,
-      storageInstructions,
-      images,
-    } = req.body;
 
-    const updateData = {
-      productName,
-      brand,
-      price,
-      originalPrice: originalPrice ?? null,
-      discountPercent: discountPercent ?? 0,
-      category,
-      sizes,
-      quantity: quantity ?? 0,
-      description,
-      specifications,
-      careInstructions,
-      storageInstructions,
-      images,
-    };
+    const updateData = {};
+    const fields = [
+      "productName",
+      "brand",
+      "price",
+      "originalPrice",
+      "discountPercent",
+      "category",
+      "sizes",
+      "quantity",
+      "description",
+      "specifications",
+      "careInstructions",
+      "storageInstructions",
+      "images",
+    ];
+
+    fields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
 
     await productModel.findByIdAndUpdate(productId, updateData, { new: true });
     return res.status(200).send("update product successfully");

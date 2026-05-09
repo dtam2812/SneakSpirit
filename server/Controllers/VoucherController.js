@@ -17,7 +17,6 @@ const postVoucher = async (req, res) => {
       discount,
       maximumDiscount,
       appliedFor,
-      pic,
     } = req.body;
 
     await voucherModel.create({
@@ -27,7 +26,6 @@ const postVoucher = async (req, res) => {
       discount: discount,
       maximumDiscount: maximumDiscount,
       appliedFor: appliedFor,
-      pic: pic,
     });
     return res.status(200).send("create voucher successfully");
   } catch (error) {}

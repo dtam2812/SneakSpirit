@@ -70,10 +70,13 @@ const Cities = ({ children }) => {
       value={{
         cities,
         selectedCity,
+        setSelectedCity,
         districts,
         selectedDistrict,
+        setSelectedDistrict,
         wards,
         selectedWard,
+        setSelectedWard,
         handleCityChange,
         handleDistrictChange,
         handleWardChange,

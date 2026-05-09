@@ -146,7 +146,12 @@ const ProductAdmin = ({ listProduct, setListProduct }) => {
 
   const handleAddProduct = async () => {
     try {
-      await axios.post("auth/admin/product/create", buildPayload());
+      const response = await axios.post(
+        "auth/admin/product/create",
+        buildPayload(),
+      );
+      setListProduct((prev) => [...prev, response.data]);
+      setSortedProduct((prev) => [...prev, response.data]);
       setValue(EMPTY_VALUE);
       setIsAdding(false);
     } catch (error) {
@@ -156,7 +161,16 @@ const ProductAdmin = ({ listProduct, setListProduct }) => {
 
   const handleUpdateProduct = async (productId) => {
     try {
-      await axios.put(`auth/admin/product/update/${productId}`, buildPayload());
+      const response = await axios.put(
+        `auth/admin/product/update/${productId}`,
+        buildPayload(),
+      );
+      setListProduct((prev) =>
+        prev.map((p) => (p._id === productId ? response.data : p)),
+      );
+      setSortedProduct((prev) =>
+        prev.map((p) => (p._id === productId ? response.data : p)),
+      );
       setValue(EMPTY_VALUE);
       setIsEditing(false);
     } catch (error) {
@@ -224,6 +238,7 @@ const ProductAdmin = ({ listProduct, setListProduct }) => {
         <ProductTable
           listProduct={sortedProduct}
           setIsEditing={setIsEditing}
+          setListProduct={setListProduct}
           setCurrentProduct={setCurrentProduct}
           searchingValue={searchingValue}
           searched={searched}

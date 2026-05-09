@@ -1,20 +1,31 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
 import { useState } from "react";
-import removeAccents from 'remove-accents';
+import removeAccents from "remove-accents";
 
-const VoucherTable = ({ listVoucher, setCurrentVoucher, setIsEditing, searchingValue, searched }) => {
+const VoucherTable = ({
+  listVoucher,
+  setListVoucher,
+  setCurrentVoucher,
+  setIsEditing,
+  searchingValue,
+  searched,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   const totalPages = Math.ceil(listVoucher.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentVouchers = listVoucher.slice(startIndex, startIndex + itemsPerPage);
+  const currentVouchers = listVoucher.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   //Xóa voucher
   const handleDelete = async (voucherId) => {
     try {
       await axios.delete(`auth/admin/voucher/delete/${voucherId}`);
+      setListVoucher((prev) => prev.filter((v) => v._id !== voucherId));
     } catch (error) {
       if (error.response?.status === 401) {
         console.log("Unauthorized request");
@@ -43,24 +54,46 @@ const VoucherTable = ({ listVoucher, setCurrentVoucher, setIsEditing, searchingV
               <tbody>
                 {currentVouchers.length > 0 ? (
                   searched === true ? (
-                    currentVouchers.filter((element) => {
-                      const voucherName = removeAccents((`${element.voucherName} ${element.type} ${element.discountType}`).toLowerCase());
-                      const searchValue = removeAccents(searchingValue.toLowerCase());
+                    currentVouchers
+                      .filter((element) => {
+                        const voucherName = removeAccents(
+                          `${element.voucherName} ${element.type} ${element.discountType}`.toLowerCase(),
+                        );
+                        const searchValue = removeAccents(
+                          searchingValue.toLowerCase(),
+                        );
 
-                      return searchValue === '' ? element : voucherName.includes(searchValue);
-                    })
+                        return searchValue === ""
+                          ? element
+                          : voucherName.includes(searchValue);
+                      })
                       .map((element, index) => {
                         return (
-                          <tr className="border-b dark:border-neutral-500" key={element._id}>
+                          <tr
+                            className="border-b dark:border-neutral-500"
+                            key={element._id}
+                          >
                             <td className="whitespace-nowrap px-6 py-4 font-medium">
                               {startIndex + index + 1}
                             </td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.voucherName}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.type}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.discountType}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.discount.toLocaleString('vi-VN')}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.maximumDiscount.toLocaleString('vi-VN')}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.appliedFor.toLocaleString('vi-VN')}</td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.voucherName}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.type}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.discountType}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.discount.toLocaleString("vi-VN")}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.maximumDiscount.toLocaleString("vi-VN")}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.appliedFor.toLocaleString("vi-VN")}
+                            </td>
                             <td className="whitespace-nowrap px-6 py-4 flex">
                               <button
                                 onClick={() => {
@@ -79,21 +112,36 @@ const VoucherTable = ({ listVoucher, setCurrentVoucher, setIsEditing, searchingV
                               </button>
                             </td>
                           </tr>
-                        )
+                        );
                       })
                   ) : (
                     currentVouchers.map((element, index) => {
                       return (
-                        <tr className="border-b dark:border-neutral-500" key={element._id}>
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={element._id}
+                        >
                           <td className="whitespace-nowrap px-6 py-4 font-medium">
                             {startIndex + index + 1}
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.voucherName}</td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.type}</td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.discountType}</td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.discount.toLocaleString('vi-VN')}</td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.maximumDiscount.toLocaleString('vi-VN')}</td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.appliedFor.toLocaleString('vi-VN')}</td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.voucherName}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.type}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.discountType}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.discount.toLocaleString("vi-VN")}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.maximumDiscount.toLocaleString("vi-VN")}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.appliedFor.toLocaleString("vi-VN")}
+                          </td>
                           <td className="whitespace-nowrap px-6 py-4 flex">
                             <button
                               onClick={() => {
@@ -112,7 +160,7 @@ const VoucherTable = ({ listVoucher, setCurrentVoucher, setIsEditing, searchingV
                             </button>
                           </td>
                         </tr>
-                      )
+                      );
                     })
                   )
                 ) : (
@@ -138,14 +186,15 @@ const VoucherTable = ({ listVoucher, setCurrentVoucher, setIsEditing, searchingV
                 {currentPage} / {totalPages}
               </span>
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
                 disabled={currentPage === totalPages}
                 className="mx-2 px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
               >
                 Sau
               </button>
             </div>
-
           </div>
         </div>
       </div>

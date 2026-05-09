@@ -12,13 +12,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const Header = ({ cartList, setCartList, setAccessToken, accessToken }) => {
-  const { setIsOpenSideMenu } = useContext(ModalContext);
+  const { isOpenSideMenu, setIsOpenSideMenu } = useContext(ModalContext);
   const [isPopoverVisible, setPopoverVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [searchingValue, setSearchingValue] = useState("");
   const navigate = useNavigate();
+
+  const decodedPayload = accessToken ? jwtDecode(accessToken) : null;
+  const role = decodedPayload ? decodedPayload.role : null;
 
   //Quản lý đăng nhập
   useEffect(() => {
@@ -53,13 +56,14 @@ const Header = ({ cartList, setCartList, setAccessToken, accessToken }) => {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) navigate("/login");
   };
+
   return (
     <header className="shadow-md z-50 sticky top-0 bg-white">
       <div className="container">
         <nav className="bg-white relative border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800 ">
           <div className="flex justify-between items-center mx-auto">
             <button
-              onClick={() => setIsOpenSideMenu(true)}
+              onClick={() => setIsOpenSideMenu(!isOpenSideMenu)}
               data-collapse-toggle="navbar-default"
               type="button"
               className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg sm:hidden "
@@ -87,10 +91,7 @@ const Header = ({ cartList, setCartList, setAccessToken, accessToken }) => {
               <p
                 className={`flex items-center ${isSearching ? "sm:flex hidden" : ""}`}
               >
-                <img
-                  src="./public/logo.png"
-                  className="mr-3 !w-52 !h-32 translate-x-3 sm:translate-x-0 sm:h-28 sm:w-28"
-                />
+                <img src="./public/logo.png" className="mr-3 w-36 h-28 " />
               </p>
             </Link>
 
@@ -215,45 +216,50 @@ const Header = ({ cartList, setCartList, setAccessToken, accessToken }) => {
                 >
                   <FontAwesomeIcon icon={faUser} />
                 </p>
-                <div
-                  id="popover-hover"
-                  role="tooltip"
-                  className={`absolute inline-block w-36 -translate-x-16 bg-[#333] text-sm text-[#fff] rounded-lg shadow-sm ${
-                    isPopoverVisible
-                      ? "opacity-100 visible"
-                      : "opacity-0 invisible"
-                  } dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800`}
-                >
-                  {isLoggedIn === false ? (
-                    <>
-                      <Link to="/login">
-                        <div className="px-3 py-2 cursor-pointer hover:bg-slate-500 transition-colors rounded-lg">
-                          <p className="">Đăng nhập</p>
+                {isPopoverVisible && (
+                  <div
+                    id="popover-hover"
+                    role="tooltip"
+                    className="absolute z-50 inline-block w-36 -translate-x-16 bg-[#333] text-sm text-[#fff] rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800"
+                  >
+                    {isLoggedIn === false ? (
+                      <>
+                        <Link to="/login">
+                          <div className="px-3 py-2 cursor-pointer hover:bg-slate-500 transition-colors rounded-lg">
+                            <p>Đăng nhập</p>
+                          </div>
+                        </Link>
+                        <Link to="/register">
+                          <div className="px-3 py-2 cursor-pointer hover:bg-slate-500 transition-colors rounded-lg">
+                            <p>Đăng ký</p>
+                          </div>
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <Link to={`/user/${userId}`}>
+                          <div className="px-3 py-2 cursor-pointer hover:bg-slate-500 transition-colors rounded-lg">
+                            <p>Tài khoản</p>
+                          </div>
+                        </Link>
+                        {role === "admin" && (
+                          <Link to={`/admin`}>
+                            <div className="px-3 py-2 cursor-pointer hover:bg-slate-500 transition-colors rounded-lg">
+                              <p>Quản lý</p>
+                            </div>
+                          </Link>
+                        )}
+                        <div
+                          onClick={handleLogoutUser}
+                          className="px-3 py-2 cursor-pointer hover:bg-slate-500 transition-colors rounded-lg"
+                        >
+                          <p>Đăng xuất</p>
                         </div>
-                      </Link>
-                      <Link to="/register">
-                        <div className="px-3 py-2 cursor-pointer hover:bg-slate-500 transition-colors rounded-lg">
-                          <p>Đăng ký</p>
-                        </div>
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <Link to={`/user/${userId}`}>
-                        <div className="px-3 py-2 cursor-pointer hover:bg-slate-500 transition-colors rounded-lg">
-                          <p className="">Tài khoản</p>
-                        </div>
-                      </Link>
-                      <div
-                        onClick={handleLogoutUser}
-                        className="px-3 py-2 cursor-pointer hover:bg-slate-500 transition-colors rounded-lg"
-                      >
-                        <p>Đăng xuất</p>
-                      </div>
-                    </>
-                  )}
-                  <div data-popper-arrow></div>
-                </div>
+                      </>
+                    )}
+                    <div data-popper-arrow></div>
+                  </div>
+                )}
               </div>
               <Link to={isLoggedIn ? "/cart" : "/login"}>
                 <div className="relative">
