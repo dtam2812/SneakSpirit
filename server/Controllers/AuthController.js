@@ -25,13 +25,13 @@ const login = async (req, res) => {
   //check email
   const user = await userModel.findOne({ email: req.body.email });
   if (!user) {
-    return res.status(400).send("Invalid Email or Password");
+    return res.status(400).send("Tài khoản hoặc mật khẩu không đúng");
   }
 
   //check password
   const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
   if (!isPasswordValid) {
-    return res.status(400).send("Invalid Email or Password");
+    return res.status(400).send("Tài khoản hoặc mật khẩu không đúng");
   }
 
   const jwtToken = jwt.sign(
@@ -43,7 +43,7 @@ const login = async (req, res) => {
     process.env.SECRET_JWT,
     {
       expiresIn: 3600,
-    }
+    },
   );
 
   return res.status(200).send({

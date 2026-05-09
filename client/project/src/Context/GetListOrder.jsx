@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
-import { createContext, useEffect, useState } from "react"
+import { createContext, useEffect, useState } from "react";
 
 export const OrderContext = createContext({});
 
 const GetListOrder = ({ children }) => {
   const [listOrder, setListOrder] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   //Lấy danh sách đơn hàng
   useEffect(() => {
@@ -21,11 +22,11 @@ const GetListOrder = ({ children }) => {
     };
 
     getListOrder();
-  }, [listOrder])
+  }, [refresh]);
   return (
     <OrderContext.Provider value={{ listOrder, setListOrder }}>
       {children}
     </OrderContext.Provider>
-  )
-}
-export default GetListOrder
+  );
+};
+export default GetListOrder;

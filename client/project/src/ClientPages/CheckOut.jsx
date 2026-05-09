@@ -1,7 +1,7 @@
 import { faAt, faPhone, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { CitiesContext } from "../Context/Cities";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -13,6 +13,7 @@ const CheckOut = () => {
   const { cartList, setCartList } = useOutletContext();
   const [paymentMethod, setPaymentMethod] = useState("");
   const [doneCheckOut, setDoneCheckOut] = useState(false);
+  const navigate = useNavigate();
 
   const {
     cities,
@@ -83,26 +84,26 @@ const CheckOut = () => {
       });
 
       await Promise.all(
-        listProduct.map(async (proElement) => {
-          for (const cartElement of cartList) {
-            if (proElement._id === cartElement.id) {
-              const update =
-                cartElement.category !== "Khác"
-                  ? {
-                      sizes: {
-                        ...proElement.sizes,
-                        [cartElement.size]:
-                          proElement.sizes[cartElement.size] -
-                          cartElement.quantity,
-                      },
-                    }
-                  : { quantity: proElement.quantity - cartElement.quantity };
-              await axios.put(
-                `/auth/admin/product/update/${proElement._id}`,
-                update,
-              );
-            }
+        cartList.map(async (cartElement) => {
+          const product = listProduct.find((p) => p._id === cartElement._id);
+
+          if (!product) {
+            console.warn("Không tìm thấy product:", cartElement._id);
+            return; // bỏ qua, không throw lỗi
           }
+
+          const update =
+            cartElement.category !== "Khác"
+              ? {
+                  sizes: {
+                    ...product.sizes,
+                    [cartElement.size]:
+                      product.sizes[cartElement.size] - cartElement.quantity,
+                  },
+                }
+              : { quantity: product.quantity - cartElement.quantity };
+
+          await axios.put(`/auth/admin/product/update/${product._id}`, update);
         }),
       );
 
@@ -196,7 +197,7 @@ const CheckOut = () => {
                   >
                     <img
                       className="w-14 h-10 object-contain"
-                      src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
+                      src="./public/momo.webp"
                     />
                     <div className="ml-5">
                       <span className="mt-2 font-semibold">
@@ -419,15 +420,19 @@ const CheckOut = () => {
                 Đặt hàng thành công!
               </h3>
               <p className="text-gray-600 my-2">
-                HYBID® xin chân thành cảm ơn vì đã tin tưởng mua hàng
+                Sneak Spirit xin chân thành cảm ơn vì đã tin tưởng mua hàng
               </p>
               <p>Chúc bạn một ngày may mắn!</p>
               <div className="py-10">
-                <Link onClick={() => setDoneCheckOut(false)} to="/collection">
-                  <button className="px-12 bg-gray-900 hover:opacity-75 duration-200 text-white font-semibold py-3 rounded-lg">
-                    Tiếp tục mua sắm
-                  </button>
-                </Link>
+                <button
+                  onClick={() => {
+                    setDoneCheckOut(false);
+                    navigate("/collection");
+                  }}
+                  className="px-12 bg-gray-900 hover:opacity-75 duration-200 text-white font-semibold py-3 rounded-lg"
+                >
+                  Tiếp tục mua sắm
+                </button>
               </div>
             </div>
           </div>
