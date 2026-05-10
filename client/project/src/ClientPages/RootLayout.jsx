@@ -10,6 +10,7 @@ import GetListOrder from "../Context/GetListOrder";
 import { jwtDecode } from "jwt-decode";
 import Bill from "../Context/Bill";
 import { Cities } from "../Context/Cities";
+import ChatWidget from "../components/ChatWidget";
 
 const RootLayout = () => {
   const [cartList, setCartList] = useState([]);
@@ -68,6 +69,7 @@ const RootLayout = () => {
         </GetListVoucher>
       </GetListProduct>
       <Footer />
+      <ChatWidget />
     </div>
   );
 };

@@ -2,3 +2,4 @@ server/node_modules
 server/.env
 
 /client/project/node_modules
+/client/project/.env
