@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://sneakspirit-1.onrender.com";
 
 const SUGGESTIONS = [
   "Giày Nike size US9 còn hàng không?",

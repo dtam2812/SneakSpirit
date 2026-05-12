@@ -23,7 +23,7 @@ const OrdersInfo = ({ user }) => {
       }
     };
     getUserOrders();
-  }, [id]); // ← bỏ items khỏi dependency
+  }, [id]); 
 
   const formatDate = (date) => new Date(date).toLocaleDateString("vi-VN");
 
