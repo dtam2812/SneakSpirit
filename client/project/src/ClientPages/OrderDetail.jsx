@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CitiesContext } from "../Context/Cities";
-import axios from "axios";
+import axios from "../AdminComponents/Common";
 import Breadcrumb from "../components/Breadcrumb";
 import Loading from "../components/Loading";
 

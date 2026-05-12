@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
+import axios from "../Common";
 import { useState } from "react";
 import removeAccents from "remove-accents";
 

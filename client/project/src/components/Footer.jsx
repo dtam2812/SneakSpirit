@@ -17,11 +17,7 @@ const Footer = () => {
       <div className="container">
         <div className="xl:flex py-20 gap-x-5 px-2 sm:px-8">
           <div className="xl:w-1/4 ">
-            <img
-              className="w-60 h-40 mx-auto lg:mx-0"
-              src="./public/logo.png"
-              alt=""
-            />
+            <img className="w-60 h-40 mx-auto lg:mx-0" src="/logo.png" alt="" />
             <div className="flex gap-x-3 items-center pb-2 ">
               <p>
                 <FontAwesomeIcon icon={faLocationDot} />

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../AdminComponents/Common";
 import { createContext, useEffect, useState } from "react";
 
 const CitiesContext = createContext();

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
+import axios from "../../AdminComponents/Common";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import removeAccents from "remove-accents";
@@ -23,7 +23,7 @@ const OrdersInfo = ({ user }) => {
       }
     };
     getUserOrders();
-  }, [id]); 
+  }, [id]);
 
   const formatDate = (date) => new Date(date).toLocaleDateString("vi-VN");
 

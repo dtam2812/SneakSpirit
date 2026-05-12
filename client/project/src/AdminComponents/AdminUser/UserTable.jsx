@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import axios from "axios";
+import axios from "../Common";
 import { useNavigate } from "react-router-dom";
-import removeAccents from 'remove-accents';
+import removeAccents from "remove-accents";
 
 const UserTable = ({ listUser, searchingValue, searched }) => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const UserTable = ({ listUser, searchingValue, searched }) => {
       await axios.delete(`auth/admin/user/delete/${userId}`);
     } catch (error) {
       if (error.response?.status === 401) {
-        navigate('/login');
+        navigate("/login");
       }
     }
   };
@@ -43,22 +43,40 @@ const UserTable = ({ listUser, searchingValue, searched }) => {
               <tbody>
                 {currentUsers.length > 0 ? (
                   searched === true ? (
-                    currentUsers.filter((element) => {
-                      const user = removeAccents((`${element.userName} ${element.email}`).toLowerCase());
-                      const searchValue = removeAccents(searchingValue.toLowerCase());
+                    currentUsers
+                      .filter((element) => {
+                        const user = removeAccents(
+                          `${element.userName} ${element.email}`.toLowerCase(),
+                        );
+                        const searchValue = removeAccents(
+                          searchingValue.toLowerCase(),
+                        );
 
-                      return searchValue === '' ? element : user.includes(searchValue);
-                    })
+                        return searchValue === ""
+                          ? element
+                          : user.includes(searchValue);
+                      })
                       .map((element, index) => {
                         return (
-                          <tr key={element._id} className="border-b dark:border-neutral-500">
+                          <tr
+                            key={element._id}
+                            className="border-b dark:border-neutral-500"
+                          >
                             <td className="whitespace-nowrap px-6 py-4 font-medium">
                               {startIndex + index + 1}
                             </td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.userName}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.email}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.role}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{element.telephone}</td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.userName}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.email}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.role}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4">
+                              {element.telephone}
+                            </td>
                             <td className="whitespace-nowrap px-6 py-4 flex">
                               <button
                                 onClick={() => handleDelete(element._id)}
@@ -68,19 +86,30 @@ const UserTable = ({ listUser, searchingValue, searched }) => {
                               </button>
                             </td>
                           </tr>
-                        )
+                        );
                       })
                   ) : (
                     currentUsers.map((element, index) => {
                       return (
-                        <tr key={element._id} className="border-b dark:border-neutral-500">
+                        <tr
+                          key={element._id}
+                          className="border-b dark:border-neutral-500"
+                        >
                           <td className="whitespace-nowrap px-6 py-4 font-medium">
                             {startIndex + index + 1}
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.userName}</td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.email}</td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.role}</td>
-                          <td className="whitespace-nowrap px-6 py-4">{element.telephone}</td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.userName}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.email}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.role}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4">
+                            {element.telephone}
+                          </td>
                           <td className="whitespace-nowrap px-6 py-4 flex">
                             <button
                               onClick={() => handleDelete(element._id)}
@@ -90,10 +119,9 @@ const UserTable = ({ listUser, searchingValue, searched }) => {
                             </button>
                           </td>
                         </tr>
-                      )
+                      );
                     })
                   )
-
                 ) : (
                   <tr>
                     <td colSpan="6" className="text-center py-4">
@@ -117,14 +145,15 @@ const UserTable = ({ listUser, searchingValue, searched }) => {
                 {currentPage} / {totalPages}
               </span>
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
                 disabled={currentPage === totalPages}
                 className="mx-2 px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
               >
                 Sau
               </button>
             </div>
-
           </div>
         </div>
       </div>

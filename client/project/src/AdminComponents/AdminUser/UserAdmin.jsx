@@ -3,7 +3,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import UserTable from "./UserTable";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../Common";
 import SearchBar from "../../components/SearchBar";
 
 const UserAdmin = ({ listUser }) => {

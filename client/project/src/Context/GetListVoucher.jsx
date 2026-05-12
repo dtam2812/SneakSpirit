@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
+import axios from "../AdminComponents/Common";
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

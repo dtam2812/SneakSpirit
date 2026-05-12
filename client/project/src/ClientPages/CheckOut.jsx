@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { CitiesContext } from "../Context/Cities";
-import axios from "axios";
+import axios from "../AdminComponents/Common";
 import { jwtDecode } from "jwt-decode";
 import { ProductContext } from "../Context/GetListProduct";
 import { billContext } from "../Context/Bill";
@@ -197,7 +197,7 @@ const CheckOut = () => {
                   >
                     <img
                       className="w-14 h-10 object-contain"
-                      src="./public/momo.webp"
+                      src="/momo.webp"
                     />
                     <div className="ml-5">
                       <span className="mt-2 font-semibold">

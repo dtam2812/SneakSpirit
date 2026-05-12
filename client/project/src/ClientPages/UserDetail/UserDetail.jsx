@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../AdminComponents/Common";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import InfoUser from "./InfoUser";

@@ -2,7 +2,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import VoucherTable from "./VoucherTable";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../Common";
 import SearchBar from "../../components/SearchBar";
 
 const VoucherAdmin = ({ listVoucher, setListVoucher }) => {

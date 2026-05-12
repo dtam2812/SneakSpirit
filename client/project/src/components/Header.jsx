@@ -91,7 +91,7 @@ const Header = ({ cartList, setCartList, setAccessToken, accessToken }) => {
               <p
                 className={`flex items-center ${isSearching ? "sm:flex hidden" : ""}`}
               >
-                <img src="./public/logo.png" className="mr-3 w-36 h-28 " />
+                <img src="/logo.png" className="mr-3 w-36 h-28 " />
               </p>
             </Link>
 

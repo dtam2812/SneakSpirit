@@ -6,7 +6,7 @@ import {
   faTruckFast,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
+import axios from "../AdminComponents/Common";
 import { useContext, useEffect, useState } from "react";
 import {
   Link,

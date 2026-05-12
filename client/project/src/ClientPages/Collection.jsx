@@ -8,7 +8,7 @@ const Collection = () => {
     <div>
       <Breadcrumb first="Tất cả sản phẩm" />
       <div className="container">
-        <Banner bannerSrc="./public/banner1.png" />
+        <Banner bannerSrc="/banner1.png" />
         {/*Liệt kê voucher*/}
         <VoucherList />
         {/*Liệt kê sản phẩm*/}

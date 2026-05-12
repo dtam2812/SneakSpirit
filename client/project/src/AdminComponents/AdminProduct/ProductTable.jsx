@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import axios from "axios";
+import axios from "../Common";
 import removeAccents from "remove-accents";
 
 const SIZE_KEYS = [

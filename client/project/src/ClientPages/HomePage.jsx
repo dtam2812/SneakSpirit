@@ -8,7 +8,7 @@ function HomePage() {
   return (
     <div className="container">
       <Link to="/collection">
-        <Banner bannerSrc="./public/banner2.jpg" />
+        <Banner bannerSrc="/banner2.jpg" />
       </Link>
       {/*Liệt kê voucher*/}
       <VoucherList />
