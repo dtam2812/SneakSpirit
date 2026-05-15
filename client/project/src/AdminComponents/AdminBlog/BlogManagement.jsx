@@ -4,6 +4,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "../Common";
 
+const POSTS_PER_PAGE = 7;
+
 const BlogManagement = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
@@ -11,6 +13,7 @@ const BlogManagement = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
@@ -77,6 +80,7 @@ const BlogManagement = () => {
       setAuthor("");
       setContent("");
       setIsPublished(true);
+      setCurrentPage(1);
       getListBlog();
     } catch (error) {
       console.log("postBlog error", error);
@@ -101,12 +105,20 @@ const BlogManagement = () => {
     }
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   const formatDate = (dateStr) =>
     new Date(dateStr).toLocaleDateString("vi-VN", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     });
+
+  const totalPages = Math.ceil(blogs.length / POSTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const paginated = blogs.slice(startIndex, startIndex + POSTS_PER_PAGE);
 
   return (
     <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-10 font-sans">
@@ -126,16 +138,24 @@ const BlogManagement = () => {
         <div className="grid gap-8 xl:grid-cols-[1.2fr_1fr]">
           {/* ── Danh sách bài viết ── */}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden">
-            <h2 className="mb-6 text-xl font-bold text-slate-900">
-              Bài viết đã đăng
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-slate-900">
+                Bài viết đã đăng
+              </h2>
+              {blogs.length > 0 && (
+                <span className="text-xs text-slate-500">
+                  {blogs.length} bài viết
+                </span>
+              )}
+            </div>
+
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="bg-slate-50 text-slate-600 uppercase text-xs font-bold">
                   <tr>
                     <th className="px-4 py-3">Ảnh</th>
                     <th className="px-4 py-3">Nội dung</th>
-                    <th className="px-4 py-3">Thao tác</th>
+                    <th className="px-2 py-3">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -153,7 +173,7 @@ const BlogManagement = () => {
                         </div>
                       </td>
                     </tr>
-                  ) : blogs.length === 0 ? (
+                  ) : paginated.length === 0 ? (
                     <tr>
                       <td
                         colSpan={3}
@@ -163,7 +183,7 @@ const BlogManagement = () => {
                       </td>
                     </tr>
                   ) : (
-                    blogs.map((blog) => (
+                    paginated.map((blog) => (
                       <tr
                         key={blog._id}
                         className="hover:bg-slate-50 transition-colors"
@@ -237,15 +257,82 @@ const BlogManagement = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-5 pt-5 border-t border-slate-200">
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-2.5 py-1.5 text-sm font-semibold rounded-xl border border-slate-200 text-slate-600
+                      hover:border-slate-400 hover:text-slate-900 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    ←
+                  </button>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => {
+                      const isVisible =
+                        page === 1 ||
+                        page === totalPages ||
+                        Math.abs(page - currentPage) <= 1;
+
+                      const showDotsBefore =
+                        page === currentPage - 2 && currentPage - 2 > 1;
+                      const showDotsAfter =
+                        page === currentPage + 2 &&
+                        currentPage + 2 < totalPages;
+
+                      if (showDotsBefore || showDotsAfter) {
+                        return (
+                          <span
+                            key={page}
+                            className="px-1 text-slate-400 text-sm"
+                          >
+                            ...
+                          </span>
+                        );
+                      }
+
+                      if (!isVisible) return null;
+
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`w-8 h-8 text-sm font-semibold rounded-xl border transition
+                          ${
+                            currentPage === page
+                              ? "bg-slate-900 text-white border-slate-900"
+                              : "border-slate-200 text-slate-600 hover:border-slate-400 hover:text-slate-900"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    },
+                  )}
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-2.5 py-1.5 text-sm font-semibold rounded-xl border border-slate-200 text-slate-600
+                      hover:border-slate-400 hover:text-slate-900 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+            )}
           </section>
 
-          {/* ── Form soạn bài ── */}
+          {/* Form soạn bài  */}
           <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
             <h2 className="mb-6 text-xl font-bold text-slate-900">
               Soạn bài viết mới
             </h2>
             <div className="space-y-5">
-              {/* Tiêu đề */}
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Tiêu đề bài viết
@@ -259,7 +346,6 @@ const BlogManagement = () => {
                 />
               </div>
 
-              {/* Tác giả + Tags */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -287,7 +373,6 @@ const BlogManagement = () => {
                 </div>
               </div>
 
-              {/* Excerpt */}
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Mô tả ngắn (Excerpt)
@@ -301,7 +386,6 @@ const BlogManagement = () => {
                 />
               </div>
 
-              {/* Cover Image */}
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
                   URL Ảnh đại diện
@@ -315,7 +399,6 @@ const BlogManagement = () => {
                 />
               </div>
 
-              {/* Nội dung */}
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Nội dung bài viết
@@ -331,7 +414,6 @@ const BlogManagement = () => {
                 </div>
               </div>
 
-              {/* Published + Submit */}
               <div className="flex items-center justify-between pt-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input

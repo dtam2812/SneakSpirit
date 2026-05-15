@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "../AdminComponents/Common";
@@ -10,6 +11,8 @@ const TAG_COLORS = {
   "Tin tức": "bg-red-600 text-white",
   "Hướng dẫn": "bg-stone-800 text-white",
 };
+
+const POSTS_PER_PAGE = 7;
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString("vi-VN", {
@@ -35,7 +38,7 @@ function TagBadge({ tag, size = "sm" }) {
 function FeaturedPost({ blog }) {
   return (
     <Link to={`/blog/${blog.slug}`} className="group block mb-12">
-      <div className="grid md:grid-cols-2 gap-0 bg-white overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+      <div className="grid md:grid-cols-2 gap-0 rounded-lg bg-white overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
         <div className="relative h-64 md:h-auto min-h-[320px] bg-gray-100 overflow-hidden">
           {blog.coverImage ? (
             <img
@@ -58,7 +61,7 @@ function FeaturedPost({ blog }) {
             </div>
             <h2
               className="text-3xl md:text-4xl font-black text-gray-900 leading-tight mb-4 group-hover:text-red-600 transition-colors"
-              style={{ fontFamily: "'Georgia', serif" }}
+              style={{ fontFamily: "'Roboto'" }}
             >
               {blog.title}
             </h2>
@@ -86,7 +89,7 @@ function BlogCard({ blog }) {
   return (
     <Link
       to={`/blog/${blog.slug}`}
-      className="group bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+      className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
     >
       <div className="relative h-48 bg-gray-100 overflow-hidden">
         {blog.coverImage ? (
@@ -109,7 +112,7 @@ function BlogCard({ blog }) {
         </div>
         <h3
           className="font-black text-gray-900 text-lg leading-tight mb-2 group-hover:text-red-600 transition-colors line-clamp-2"
-          style={{ fontFamily: "'Georgia', serif" }}
+          style={{ fontFamily: "'Roboto'" }}
         >
           {blog.title}
         </h3>
@@ -125,11 +128,83 @@ function BlogCard({ blog }) {
   );
 }
 
+function Pagination({ currentPage, totalPages, onPageChange }) {
+  if (totalPages <= 1) return null;
+
+  const pages = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pages.push(i);
+  }
+
+  return (
+    <div className="flex items-center justify-center gap-2 mt-12">
+      {/* Prev */}
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="px-3 py-2 text-sm font-semibold rounded-lg border border-gray-300 text-gray-600
+          hover:border-black hover:text-black transition disabled:opacity-30 disabled:cursor-not-allowed"
+      >
+        ←
+      </button>
+
+      {/* Pages */}
+      {pages.map((page) => {
+        // Hiển thị: trang đầu, trang cuối, trang hiện tại ± 1, dấu ...
+        const isVisible =
+          page === 1 ||
+          page === totalPages ||
+          Math.abs(page - currentPage) <= 1;
+
+        const showDotsBefore = page === currentPage - 2 && currentPage - 2 > 1;
+        const showDotsAfter =
+          page === currentPage + 2 && currentPage + 2 < totalPages;
+
+        if (showDotsBefore || showDotsAfter) {
+          return (
+            <span key={page} className="px-1 text-gray-400 text-sm">
+              ...
+            </span>
+          );
+        }
+
+        if (!isVisible) return null;
+
+        return (
+          <button
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={`w-9 h-9 text-sm font-bold rounded-lg border transition
+              ${
+                currentPage === page
+                  ? "bg-black text-white border-black"
+                  : "border-gray-300 text-gray-600 hover:border-black hover:text-black"
+              }`}
+          >
+            {page}
+          </button>
+        );
+      })}
+
+      {/* Next */}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="px-3 py-2 text-sm font-semibold rounded-lg border border-gray-300 text-gray-600
+          hover:border-black hover:text-black transition disabled:opacity-30 disabled:cursor-not-allowed"
+      >
+        →
+      </button>
+    </div>
+  );
+}
+
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTag, setActiveTag] = useState(null);
   const [allTags, setAllTags] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const getListBlog = async () => {
@@ -150,6 +225,17 @@ const BlogPage = () => {
     getListBlog();
   }, []);
 
+  // Reset về trang 1 khi đổi tag
+  const handleTagChange = (tag) => {
+    setActiveTag(tag === activeTag ? null : tag);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -169,19 +255,24 @@ const BlogPage = () => {
   const filtered = activeTag
     ? blogs.filter((b) => b.tags.includes(activeTag))
     : blogs;
-  const featured = filtered[0];
-  const rest = filtered.slice(1);
+
+  const totalPages = Math.ceil(filtered.length / POSTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const paginated = filtered.slice(startIndex, startIndex + POSTS_PER_PAGE);
+
+  const featured = paginated[0];
+  const rest = paginated.slice(1);
 
   return (
     <div>
       <Breadcrumb first="Blog" />
       <div className="max-w-7xl mx-auto px-6 pt-12 pb-8">
-        {/*Header*/}
+        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mt-4 mb-10">
           <div>
             <h1
               className="text-6xl md:text-8xl font-black tracking-tighter text-gray-900 leading-none"
-              style={{ fontFamily: "'Georgia', serif" }}
+              style={{ fontFamily: "'Roboto'" }}
             >
               Blog
             </h1>
@@ -190,12 +281,12 @@ const BlogPage = () => {
             </p>
           </div>
 
-          {/*TagFilter*/}
+          {/* Tag Filter */}
           {allTags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => setActiveTag(null)}
-                className={`px-4 py-1.5 text-xs font-bold uppercase tracking-widest border transition ${
+                onClick={() => handleTagChange(null)}
+                className={`px-4 py-1.5 text-xs rounded-lg font-bold uppercase tracking-widest border transition ${
                   activeTag === null
                     ? "bg-black text-white border-black"
                     : "bg-transparent text-gray-600 border-gray-300 hover:border-black hover:text-black"
@@ -206,8 +297,8 @@ const BlogPage = () => {
               {allTags.map((tag) => (
                 <button
                   key={tag}
-                  onClick={() => setActiveTag(tag === activeTag ? null : tag)}
-                  className={`px-4 py-1.5 text-xs font-bold uppercase tracking-widest border transition ${
+                  onClick={() => handleTagChange(tag)}
+                  className={`px-4 py-1.5 text-xs rounded-lg font-bold uppercase tracking-widest border transition ${
                     activeTag === tag
                       ? "bg-black text-white border-black"
                       : "bg-transparent text-gray-600 border-gray-300 hover:border-black hover:text-black"
@@ -220,17 +311,17 @@ const BlogPage = () => {
           )}
         </div>
 
-        {/*EmptyState*/}
+        {/* Empty State */}
         {filtered.length === 0 && (
           <div className="text-center py-24 text-gray-400">
             <p className="text-xl">Chưa có bài viết nào.</p>
           </div>
         )}
 
-        {/*FeaturedPost*/}
+        {/* Featured Post */}
         {featured && <FeaturedPost blog={featured} />}
 
-        {/*BlogGrid*/}
+        {/* Blog Grid */}
         {rest.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rest.map((blog) => (
@@ -238,6 +329,13 @@ const BlogPage = () => {
             ))}
           </div>
         )}
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );
