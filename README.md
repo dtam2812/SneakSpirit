@@ -17,6 +17,7 @@ Website thương mại điện tử bán giày sneaker, dữ liệu sản phẩm
 - **Voucher & khuyến mãi** — nhập mã giảm giá, áp dụng tự động khi đủ điều kiện
 - **Quản lý đơn hàng cá nhân** — xem lịch sử, trạng thái đơn, hủy đơn
 - **Xác thực tài khoản** — đăng ký, đăng nhập, quản lý thông tin cá nhân
+- **Blog** — Tin tức, review và câu chuyện về thế giới sneakers.
 - **Chatbot AI** — hỏi đáp về sản phẩm, tư vấn size, chính sách đổi trả
 
 ### 🔧 Phía quản trị (Admin)
@@ -26,6 +27,7 @@ Website thương mại điện tử bán giày sneaker, dữ liệu sản phẩm
 - **Quản lý đơn hàng** — xem, cập nhật trạng thái, xử lý đơn
 - **Quản lý voucher** — tạo mã giảm giá, thiết lập điều kiện & thời hạn
 - **Quản lý người dùng** — xem danh sách, khóa/mở tài khoản
+- **Quản lý blog** — xem danh sách, đăng/cập nhật
 
 ---
 
