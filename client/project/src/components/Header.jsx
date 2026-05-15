@@ -185,6 +185,14 @@ const Header = ({ cartList, setCartList, setAccessToken, accessToken }) => {
                     </Link>
                   </li>
                   <li>
+                    <Link to={"/blog"}>
+                      <a className="block py-2 pr-2 pl-3 cursor-pointer hover:text-slate-400 group transition duration-300">
+                        Blog
+                        <span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-black"></span>
+                      </a>
+                    </Link>
+                  </li>
+                  <li>
                     <Link to={"/contact"}>
                       <a className="block py-2 pr-2 pl-3 cursor-pointer hover:text-slate-400 group transition duration-300">
                         Liên hệ

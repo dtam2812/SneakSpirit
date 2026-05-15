@@ -13,6 +13,7 @@ const voucherRoute = require("./Router/VoucherRoute");
 const orderRoute = require("./Router/OrderRoute");
 const contactRoute = require("./Router/ContactRoute");
 const ChatRoute = require("./Router/ChatRoute");
+const blogRoute = require("./Router/BlogRoute");
 
 const app = express();
 app.use(cors());
@@ -25,6 +26,7 @@ app.use("/auth/admin", voucherRoute);
 app.use("/api/auth", orderRoute);
 app.use("/api/auth", contactRoute);
 app.use("/api/chat", ChatRoute);
+app.use("/api/blog", blogRoute);
 
 async function startServer() {
   try {

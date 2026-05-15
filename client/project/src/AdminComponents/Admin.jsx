@@ -1,5 +1,6 @@
 import {
   AppstoreOutlined,
+  FormOutlined,
   MailOutlined,
   MessageOutlined,
   ShoppingCartOutlined,
@@ -10,7 +11,7 @@ import VoucherAdmin from "./AdminVoucher/VoucherAdmin";
 import UserAdmin from "./AdminUser/UserAdmin";
 import ProductAdmin from "./AdminProduct/ProductAdmin";
 import axios from "./Common";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ProductContext } from "../Context/GetListProduct";
 import { VoucherContext } from "../Context/GetListVoucher";
 import OrderTable from "./AdminOrder/OrderTable";
@@ -112,6 +113,12 @@ const Admin = () => {
             <ShoppingCartOutlined className="p-5 pr-5" />
             <span className="px-3">Đơn hàng</span>
           </div>
+          <Link to="/blogManagement">
+            <div className="hover:bg-[#ccc] cursor-pointer rounded-lg transition-colors">
+              <FormOutlined className="p-5 pr-5" />
+              <span className="px-3">Blog</span>
+            </div>
+          </Link>
           <div
             onClick={() => handleOnclick("contact")}
             className="hover:bg-[#ccc] cursor-pointer rounded-lg transition-colors"

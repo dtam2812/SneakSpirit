@@ -23,6 +23,9 @@ import CheckOut from "./ClientPages/CheckOut.jsx";
 import OrderDetail from "./ClientPages/OrderDetail.jsx";
 import SearchPage from "./ClientPages/SearchPage.jsx";
 import NotFound from "./ClientPages/404.jsx";
+import BlogPage from "./ClientPages/BlogPage.jsx";
+import BlogManagement from "./AdminComponents/AdminBlog/BlogManagement.jsx";
+import BlogDetail from "./ClientPages/BlogDetail.jsx";
 
 const router = createBrowserRouter([
   {
@@ -108,6 +111,18 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchPage />,
+      },
+      {
+        path: "/blog",
+        element: <BlogPage />,
+      },
+      {
+        path: "/blogDetail/:slug",
+        element: <BlogDetail />,
+      },
+      {
+        path: "/blogManagement",
+        element: <BlogManagement />,
       },
       {
         path: "*",
